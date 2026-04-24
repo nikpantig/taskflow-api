@@ -28,7 +28,7 @@ namespace TaskFlow.API.Services.Implementations
                 Id = t.Id,
                 Title = t.Title,
                 Description = t.Description,
-                IsCompleted = t.IsCompleted,
+                IsComplete = t.IsComplete,
                 CreatedAt = t.CreatedAt,
                 UpdatedAt = t.UpdatedAt
             });
@@ -43,7 +43,7 @@ namespace TaskFlow.API.Services.Implementations
                 Id = task.Id,
                 Title = task.Title,
                 Description = task.Description,
-                IsCompleted = task.IsCompleted,
+                IsComplete = task.IsComplete,
                 CreatedAt = task.CreatedAt,
                 UpdatedAt = task.UpdatedAt
             };
@@ -60,7 +60,7 @@ namespace TaskFlow.API.Services.Implementations
             {
                 Title = dto.Title,
                 Description = dto.Description,
-                IsCompleted = false
+                IsComplete = false
             };
 
             await _repository.AddAsync(task);
@@ -70,7 +70,7 @@ namespace TaskFlow.API.Services.Implementations
                 Id = task.Id,
                 Title = task.Title,
                 Description = task.Description,
-                IsCompleted = task.IsCompleted
+                IsComplete = task.IsComplete
             };
         }
 
@@ -82,7 +82,7 @@ namespace TaskFlow.API.Services.Implementations
 
             existing.Title = dto.Title;
             existing.Description = dto.Description;
-            existing.IsCompleted = dto.IsCompleted;
+            existing.IsComplete = dto.IsComplete;
             existing.UpdatedAt = DateTime.UtcNow;
 
             await _repository.UpdateAsync(existing);
@@ -112,12 +112,24 @@ namespace TaskFlow.API.Services.Implementations
                    Id = t.Id,
                    Title = t.Title,
                    Description = t.Description,
-                   IsCompleted  = t.IsCompleted,
+                   IsComplete  = t.IsComplete,
                 }),
                 PageNumber = result.PageNumber,
                 PageSize = result.PageSize,
                 TotalCount = result.TotalCount
             };
+        }
+
+        public async Task CompleteAsync(int id)
+        {
+            var task = await _repository.GetByIdAsync(id);
+
+            if (task == null)
+                throw new KeyNotFoundException("Task not found");
+
+            task.IsComplete = true;
+
+            await _repository.UpdateAsync(task);
         }
     }
 }

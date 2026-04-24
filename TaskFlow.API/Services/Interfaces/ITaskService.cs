@@ -11,5 +11,6 @@ namespace TaskFlow.API.Services.Interfaces
         Task<bool> UpdateAsync(int id, UpdateTaskItemDto dto);
         Task<bool> DeleteAsync(int id);
         Task<PagedResult<TaskItemDto>> GetAllAsync(int pageNumber, int pageSize);
+        Task CompleteAsync(int id);
     }
 }

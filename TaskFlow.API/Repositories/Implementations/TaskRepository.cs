@@ -42,7 +42,7 @@ namespace TaskFlow.API.Repositories.Implementations
             {
                 existing.Title = task.Title;
                 existing.Description = task.Description;
-                existing.IsCompleted = task.IsCompleted;
+                existing.IsComplete = task.IsComplete;
                 existing.UpdatedAt = DateTime.UtcNow;
             }
             return Task.CompletedTask;
