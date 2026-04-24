@@ -1,4 +1,5 @@
-﻿using TaskFlow.API.Domain.Entities;
+﻿using FluentValidation;
+using TaskFlow.API.Domain.Entities;
 using TaskFlow.API.DTOs;
 using TaskFlow.API.Repositories.Interfaces;
 using TaskFlow.API.Services.Interfaces;
@@ -8,14 +9,17 @@ namespace TaskFlow.API.Services.Implementations
     public class TaskService : ITaskService
     {
         private readonly ITaskRepository _repository;
-
-        public TaskService(ITaskRepository repository)
+        private readonly IValidator<CreateTaskItemDto> _validator;
+        public TaskService(
+            ITaskRepository repository,
+            IValidator<CreateTaskItemDto> validator)
         {
             _repository = repository;
+            _validator = validator;
         }
 
         public async Task<IEnumerable<TaskItemDto>> GetAllAsync()
-        { 
+        {
             var task = await _repository.GetAllAsync();
 
             return task.Select(t => new TaskItemDto
@@ -46,6 +50,11 @@ namespace TaskFlow.API.Services.Implementations
 
         public async Task<TaskItemDto> CreateAsync(CreateTaskItemDto dto)
         {
+            var validationResult = await _validator.ValidateAsync(dto);
+
+            if (!validationResult.IsValid)
+                throw new ValidationException(validationResult.Errors);
+
             var task = new TaskItem
             {
                 Title = dto.Title,
@@ -60,9 +69,7 @@ namespace TaskFlow.API.Services.Implementations
                 Id = task.Id,
                 Title = task.Title,
                 Description = task.Description,
-                IsCompleted = task.IsCompleted,
-                CreatedAt = task.CreatedAt,
-                UpdatedAt = task.UpdatedAt
+                IsCompleted = task.IsCompleted
             };
         }
 
@@ -94,4 +101,3 @@ namespace TaskFlow.API.Services.Implementations
         }
     }
 }
- 
