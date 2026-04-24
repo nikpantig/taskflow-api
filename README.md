@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🚀 TaskFlow API
 
 A clean, scalable **ASP.NET Core Web API** built to demonstrate best practices in backend development, architecture, and testing.
@@ -134,3 +135,7 @@ TaskFlow
 │       ├── Services
 │       ├── Repositories
 │       └── Helpers
+=======
+# taskflow-api
+Clean ASP.NET Core Web API for task management demonstrating SOLID principles, layered architecture, and best practices.
+>>>>>>> 63fafffb59f7c3d400fe1206feb51897c3a5c123
