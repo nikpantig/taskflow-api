@@ -22,7 +22,7 @@ namespace TaskFlow.API.Controllers
         {
             var tasks = await _taskService.GetAllAsync(query.PageNumber, query.PageSize);
 
-            return Ok(tasks);
+            return Ok(ApiResponse<IEnumerable<TaskItemDto>>.Ok(tasks));
         }
 
         [HttpGet("{id}")]
