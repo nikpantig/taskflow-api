@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using TaskFlow.API.Common;
 using TaskFlow.API.Domain.Entities;
 using TaskFlow.API.DTOs;
 using TaskFlow.API.Repositories.Interfaces;
@@ -98,6 +99,25 @@ namespace TaskFlow.API.Services.Implementations
             await _repository.DeleteAsync(id);
 
             return true;
+        }
+
+        public async Task<PagedResult<TaskItemDto>> GetAllAsync(int pageNumber, int pageSize)
+        {
+            var result = await _repository.GetAllAsync(pageNumber, pageSize);
+
+            return new PagedResult<TaskItemDto>
+            {
+                Items = result.Items.Select(t => new TaskItemDto
+                {
+                   Id = t.Id,
+                   Title = t.Title,
+                   Description = t.Description,
+                   IsCompleted  = t.IsCompleted,
+                }),
+                PageNumber = result.PageNumber,
+                PageSize = result.PageSize,
+                TotalCount = result.TotalCount
+            };
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using TaskFlow.API.DTOs;
+﻿using TaskFlow.API.Common;
+using TaskFlow.API.DTOs;
 
 namespace TaskFlow.API.Services.Interfaces
 {
@@ -9,5 +10,6 @@ namespace TaskFlow.API.Services.Interfaces
         Task<TaskItemDto> CreateAsync(CreateTaskItemDto dto);
         Task<bool> UpdateAsync(int id, UpdateTaskItemDto dto);
         Task<bool> DeleteAsync(int id);
+        Task<PagedResult<TaskItemDto>> GetAllAsync(int pageNumber, int pageSize);
     }
 }
