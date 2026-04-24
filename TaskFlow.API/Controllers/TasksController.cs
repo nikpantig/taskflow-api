@@ -22,7 +22,7 @@ namespace TaskFlow.API.Controllers
         {
             var tasks = await _taskService.GetAllAsync(query.PageNumber, query.PageSize);
 
-            return Ok(ApiResponse<IEnumerable<TaskItemDto>>.Ok(tasks));
+            return Ok(ApiResponse<PagedResult<TaskItemDto>>.Ok(tasks));
         }
 
         [HttpGet("{id}")]
@@ -71,6 +71,14 @@ namespace TaskFlow.API.Controllers
             {
                 return NotFound();
             }
+
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/complete")]
+        public async Task<ActionResult> Complete(int id)
+        {
+            await _taskService.CompleteAsync(id);
 
             return NoContent();
         }
