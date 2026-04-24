@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TaskFlow.API.Common;
 using TaskFlow.API.DTOs;
 using TaskFlow.API.Services.Interfaces;
 
@@ -20,7 +21,7 @@ namespace TaskFlow.API.Controllers
         {
             var tasks = await _taskService.GetAllAsync();
 
-            return Ok(tasks);
+            return Ok(ApiResponse<IEnumerable<TaskItemDto>>.Ok(tasks));
         }
 
         [HttpGet("{id}")]
@@ -39,12 +40,12 @@ namespace TaskFlow.API.Controllers
         [HttpPost]
         public async Task<ActionResult<TaskItemDto>> Create(CreateTaskItemDto dto)
         {
-            var createdTask = await _taskService.CreateAsync(dto);
+            var result = await _taskService.CreateAsync(dto);
 
             return CreatedAtAction(
                 nameof(GetById),
-                new { id = createdTask.Id },
-                createdTask);
+                new { id = result.Id },
+                ApiResponse<TaskItemDto>.Ok(result, "Task created successfully."));
         }
 
         [HttpPut("{id}")]
