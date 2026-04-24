@@ -17,9 +17,10 @@ namespace TaskFlow.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskItemDto>>> GetAll()
+        public async Task<ActionResult<PagedResult<TaskItemDto>>> GetAll(
+            [FromQuery] TaskQueryParameters query)
         {
-            var tasks = await _taskService.GetAllAsync();
+            var tasks = await _taskService.GetAllAsync(query.PageNumber, query.PageSize);
 
             return Ok(ApiResponse<IEnumerable<TaskItemDto>>.Ok(tasks));
         }

@@ -1,4 +1,7 @@
-﻿using TaskFlow.API.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using TaskFlow.API.Common;
+using TaskFlow.API.Data;
+using TaskFlow.API.Domain.Entities;
 using TaskFlow.API.Repositories.Interfaces;
 
 
@@ -7,6 +10,12 @@ namespace TaskFlow.API.Repositories.Implementations
     public class TaskRepository : ITaskRepository
     {
         private static readonly List<TaskItem> _tasks = new();
+        private readonly AppDbContext _context;
+
+        public TaskRepository(AppDbContext context)
+        {
+            _context = context;
+        }
 
         public Task<IEnumerable<TaskItem>> GetAllAsync()
         {
@@ -48,6 +57,27 @@ namespace TaskFlow.API.Repositories.Implementations
             }
 
             return Task.CompletedTask;
+        }
+
+        public async Task<PagedResult<TaskItem>> GetAllAsync(int pageNumber, int pageSize)
+        {
+            var query = _context.TaskItems.AsNoTracking();
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderBy(t => t.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<TaskItem>
+            {
+                Items = items,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount
+            };
         }
     }
 }

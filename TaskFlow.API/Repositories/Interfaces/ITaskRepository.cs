@@ -1,4 +1,5 @@
-﻿using TaskFlow.API.Domain.Entities;
+﻿using TaskFlow.API.Common;
+using TaskFlow.API.Domain.Entities;
 
 namespace TaskFlow.API.Repositories.Interfaces
 {
@@ -9,5 +10,6 @@ namespace TaskFlow.API.Repositories.Interfaces
         Task AddAsync(TaskItem task);
         Task UpdateAsync(TaskItem task);
         Task DeleteAsync(int id);
+        Task<PagedResult<TaskItem>> GetAllAsync(int pageNumber, int pageSize);
     }
 }
