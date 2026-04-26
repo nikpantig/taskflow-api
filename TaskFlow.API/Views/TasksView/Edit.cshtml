@@ -1,0 +1,26 @@
+﻿@model TaskFlow.API.DTOs.UpdateTaskItemDto
+
+<h2>Edit Task</h2>
+
+<form asp-action="Edit" method="post">
+	<div>
+		<label asp-for="Title"></label>
+		<input asp-for="Title" />
+		<span asp-validation-for="Title"></span>
+	</div>
+
+	<div>
+		<label asp-for="Description"></label>
+		<input asp-for="Description" />
+		<span asp-validation-for="Description"></span>
+	</div>
+
+	<div>
+		<label asp-for="IsComplete"></label>
+		<input asp-for="IsComplete" />
+	</div>
+
+	<button type="submit">Save</button>
+</form>
+
+<a asp-action="Index">Back</a>
