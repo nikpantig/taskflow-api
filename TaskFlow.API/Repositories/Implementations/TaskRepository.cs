@@ -9,7 +9,6 @@ namespace TaskFlow.API.Repositories.Implementations
 {
     public class TaskRepository : ITaskRepository
     {
-        private static readonly List<TaskItem> _tasks = new();
         private readonly AppDbContext _context;
 
         public TaskRepository(AppDbContext context)
@@ -17,46 +16,40 @@ namespace TaskFlow.API.Repositories.Implementations
             _context = context;
         }
 
-        public Task<IEnumerable<TaskItem>> GetAllAsync()
+        public async Task<IEnumerable<TaskItem>> GetAllAsync()
         {
-            return Task.FromResult(_tasks.AsEnumerable());
+            return await _context.TaskItems
+                .AsNoTracking()
+                .ToListAsync();
         }
 
-        public Task<TaskItem?> GetByIdAsync(int id)
+        public async Task<TaskItem?> GetByIdAsync(int id)
         {
-            var task = _tasks.FirstOrDefault(t => t.Id == id);
-            return Task.FromResult(task);
+            return await _context.TaskItems
+                .FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        public Task AddAsync(TaskItem task)
+        public async Task AddAsync(TaskItem task)
         {
-            task.Id = _tasks.Count + 1;
-            _tasks.Add(task);
-            return Task.CompletedTask;
+            await _context.TaskItems.AddAsync(task);
+            await _context.SaveChangesAsync();
         }
 
-        public Task UpdateAsync(TaskItem task)
+        public async Task UpdateAsync(TaskItem task)
         {
-            var existing = _tasks.FirstOrDefault(t => t.Id == task.Id);
-            if (existing != null)
-            {
-                existing.Title = task.Title;
-                existing.Description = task.Description;
-                existing.IsComplete = task.IsComplete;
-                existing.UpdatedAt = DateTime.UtcNow;
-            }
-            return Task.CompletedTask;
+            _context.TaskItems.Update(task);
+            await _context.SaveChangesAsync();
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            var task = _tasks.FirstOrDefault(t => t.Id == id);
-            if (task != null)
-            {
-                _tasks.Remove(task);
-            }
+            var task = await _context.TaskItems.FindAsync(id);
 
-            return Task.CompletedTask;
+            if (task == null)
+                return;
+
+            _context.TaskItems.Remove(task);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<PagedResult<TaskItem>> GetAllAsync(int pageNumber, int pageSize)
