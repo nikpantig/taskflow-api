@@ -1,0 +1,32 @@
+﻿@model IEnumerable<TaskFlow.API.DTOs.TaskItemDto>
+
+<h1>TaskFlow</h1>
+
+<a asp-action="Create">Create New Task</a>
+
+<table>
+	<thead>
+		<th>Title</th>
+		<th>Description</th>
+		<th>Complete</th>
+		<th>Actions</th>
+	</thead>
+	<tbody>
+		@foreach (var task in Model)
+		{
+			<tr>
+				<td>@task.Title</td>
+				<td>@task.Description</td>
+				<td>@task.IsComplete</td>
+				<td>
+					<a asp-action="Edit" asp-route-id="@task.Id">Edit</a>
+
+					<form asp-action="Delete" asp-route-id="@task.Id" method="post" style="display: inline">
+						<button type="submit">Delete</button>
+					</form>
+				</td>
+			</tr>
+		}
+
+	</tbody>
+</table>
